@@ -6,6 +6,14 @@
 //
 
 import SwiftUI
+import CoreML
+func playMusic(){
+        AudioManager.shared.playSound(named: "your_added_music_string_name")
+    }
+    
+func pauseMusic(){
+        AudioManager.shared.stopSound()
+    }
 
 struct ContentView: View {
     var body: some View {
