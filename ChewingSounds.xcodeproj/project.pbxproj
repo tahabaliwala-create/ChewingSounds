@@ -10,9 +10,22 @@
 		A7273A1430271BF40074120E /* ChewingSounds.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChewingSounds.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A731427230276A8E009FA414 /* Exceptions for "ChewingSounds" folder in "ChewingSounds" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A7273A1330271BF40074120E /* ChewingSounds */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A7273A1630271BF40074120E /* ChewingSounds */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A731427230276A8E009FA414 /* Exceptions for "ChewingSounds" folder in "ChewingSounds" target */,
+			);
 			path = ChewingSounds;
 			sourceTree = "<group>";
 		};
@@ -253,6 +266,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ChewingSounds/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app records audio to train and test a chewing sound classifier.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,6 +299,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ChewingSounds/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app records audio to train and test a chewing sound classifier.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
