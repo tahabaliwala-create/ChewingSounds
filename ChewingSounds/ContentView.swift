@@ -63,35 +63,12 @@ struct ContentView: View {
             }
             
             // MARK: Current recording file info
-            if let url = rec.fileURL {
-                Text("File: \(url.lastPathComponent)")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.middle) // Show start and end of filename for readability.
-                
-                // Alternative: show human-friendly date/time from file metadata
-                // Text("Recorded: \(friendlyDate(for: url))")
-                //     .font(.footnote)
-                //     .foregroundStyle(.secondary)
-                //     .lineLimit(1)
-            }
-            
+           
             
             
         }
         .padding()
-        // --- UI Theme examples ---
-        // Background gradient for the whole screen:
-        // .background(
-        //     LinearGradient(colors: [Color.blue.opacity(0.25), Color.purple.opacity(0.25)], startPoint: .topLeading, endPoint: .bottomTrailing)
-        // )
-        // Rounded card style around content:
-        // .background(.ultraThinMaterial)
-        // .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        // .shadow(color: .black.opacity(0.1), radius: 12, y: 6)
-        // Dark mode polish:
-        // .preferredColorScheme(.dark)
+       
         .task {
             // Request permission to record when view appears.
             rec.requestPermission { ok in
@@ -115,9 +92,8 @@ struct ContentView: View {
         }
     }
     
-    // Returns sorted list of recording files in the app's Recordings directory.
-    
-    // MARK: - Helpers
+   
+   
     private func playTapHaptic() {
 #if canImport(UIKit)
         let generator = UIImpactFeedbackGenerator(style: .medium)
