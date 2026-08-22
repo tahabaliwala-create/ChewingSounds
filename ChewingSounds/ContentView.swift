@@ -6,9 +6,12 @@ import UIKit
 import CoreML
 #endif
 import SoundAnalysis
+import Combine
 
 /// An observer that receives results from a classify sound request.
-class ResultsObserver: NSObject, SNResultsObserving {
+class ResultsObserver: NSObject, SNResultsObserving, ObservableObject {
+    @Published var label: String = "No result yet"
+    @Published var confidence: Double = 0
     /// Notifies the observer when a request generates a prediction.
     func request(_ request: SNRequest, didProduce result: SNResult) {
         // Downcast the result to a classification result.
@@ -35,6 +38,10 @@ class ResultsObserver: NSObject, SNResultsObserving {
 
         // Print the classification's name (label) with its confidence.
         print("\(classification.identifier): \(percentString) confidence.\n")
+        DispatchQueue.main.async {
+                    self.label = classification.identifier
+                    self.confidence = percent
+                }
     }
 
 
@@ -62,7 +69,7 @@ struct ContentView: View {
     // Tracks whether microphone permission is denied to show an alert.
     @State private var micDenied = false
     
-    @State private var resultsObserver: ResultsObserver?
+    @StateObject private var resultsObserver = ResultsObserver()
     
     
     func runModel() async {
@@ -107,7 +114,11 @@ struct ContentView: View {
             // MARK: Title
             Text("Voice Recorder")
                 .font(.title3).bold()
-            
+            Text(resultsObserver.label)
+                    .font(.headline)
+            Text(String(format: "%.1f%% confidence", resultsObserver.confidence))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             
             
             // MARK: Buttons - Record/Stop and Play current recording.
@@ -138,13 +149,15 @@ struct ContentView: View {
                     player.play(rec.fileURL)
                 }
                 .buttonStyle(.bordered)
-                .disabled(rec.isRecording || rec.fileURL == nil) // Disable while recording or if no file.
-                // Icon alternative:
-                // .labelStyle(.iconOnly)
-                // .font(.system(size: 20, weight: .semibold))
-                // .overlay(Image(systemName: "play.fill").font(.system(size: 20)))
-                // .disabled(rec.isRecording || rec.fileURL == nil)
+                .disabled(rec.isRecording || rec.fileURL == nil)
+                Button("Analyze") {
+                    playTapHaptic()
+                    Task { await runModel() }
+                    
+                }
+                .disabled(rec.isRecording || rec.fileURL == nil)
             }
+            
             
             // MARK: Current recording file info
            
