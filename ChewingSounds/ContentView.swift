@@ -3,9 +3,54 @@ import SwiftUI
 import AVFoundation
 #if canImport(UIKit)
 import UIKit
+import CoreML
 #endif
+import SoundAnalysis
+
+/// An observer that receives results from a classify sound request.
+class ResultsObserver: NSObject, SNResultsObserving {
+    /// Notifies the observer when a request generates a prediction.
+    func request(_ request: SNRequest, didProduce result: SNResult) {
+        // Downcast the result to a classification result.
+        guard let result = result as? SNClassificationResult else  { return }
 
 
+        // Get the prediction with the highest confidence.
+        guard let classification = result.classifications.first else { return }
+
+
+        // Get the starting time.
+        let timeInSeconds = result.timeRange.start.seconds
+
+
+        // Convert the time to a human-readable string.
+        let formattedTime = String(format: "%.2f", timeInSeconds)
+        print("Analysis result for audio at time: \(formattedTime)")
+
+
+        // Convert the confidence to a percentage string.
+        let percent = classification.confidence * 100.0
+        let percentString = String(format: "%.2f%%", percent)
+
+
+        // Print the classification's name (label) with its confidence.
+        print("\(classification.identifier): \(percentString) confidence.\n")
+    }
+
+
+
+
+    /// Notifies the observer when a request generates an error.
+    func request(_ request: SNRequest, didFailWithError error: Error) {
+        print("The analysis failed: \(error.localizedDescription)")
+    }
+
+
+    /// Notifies the observer when a request is complete.
+    func requestDidComplete(_ request: SNRequest) {
+        print("The request completed successfully!")
+    }
+}
 struct ContentView: View {
     // State object to manage recording and audio levels.
     @StateObject private var rec = MiniRecorder()
@@ -17,6 +62,45 @@ struct ContentView: View {
     // Tracks whether microphone permission is denied to show an alert.
     @State private var micDenied = false
     
+    @State private var resultsObserver: ResultsObserver?
+    
+    
+    func runModel() async {
+        guard let audioFileURL = rec.fileURL else  {
+            print("No recording to analyze")
+            return
+        }
+        do {
+            // Use a default model configuration.
+            let defaultConfig = MLModelConfiguration()
+            
+            // Create an instance of the sound classifier's wrapper class.
+            let soundClassifier = try ChewingSoundClassifier(configuration: MLModelConfiguration())
+            
+            // Create a classify sound request that uses the custom sound classifier.
+            let classifySoundRequest = try SNClassifySoundRequest(mlModel: soundClassifier.model)
+            let resultsObserver = ResultsObserver()
+            
+            func createAnalyzer(audioFileURL: URL) -> SNAudioFileAnalyzer? {
+                return try? SNAudioFileAnalyzer(url: audioFileURL)
+            }
+            let audioFileAnalyzer = createAnalyzer(audioFileURL: audioFileURL)
+            // Add a request to analyze.
+            try audioFileAnalyzer?.add(classifySoundRequest, withObserver: resultsObserver)
+            
+           
+            await audioFileAnalyzer?.analyze()
+            
+            
+            
+        }
+        catch {
+            print("something went wrong")
+        }
+        
+    }
+   
+
     var body: some View {
         VStack(spacing: 24) {
             
