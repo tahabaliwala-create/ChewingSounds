@@ -86,7 +86,7 @@ struct ContentView: View {
             
             // Create a classify sound request that uses the custom sound classifier.
             let classifySoundRequest = try SNClassifySoundRequest(mlModel: soundClassifier.model)
-            let resultsObserver = ResultsObserver()
+           
             
             func createAnalyzer(audioFileURL: URL) -> SNAudioFileAnalyzer? {
                 return try? SNAudioFileAnalyzer(url: audioFileURL)
